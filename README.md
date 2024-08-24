@@ -2,6 +2,7 @@
 
 This is a user listing app for a test task for [camplight.net](https://camplight.net/). It has a basic CRUD functionality:
 - Listing users with pagination
+- Updating users
 - Adding new users
 - Deleting users
 - Searching for users using name
