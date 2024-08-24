@@ -30,7 +30,8 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Design Decisions
 - I utilized Next.js for this project (a react framework) because I'm familiar with react but I haven't tried Next.js before and wanted to try it for this test. It allows things like SSR(server side rendering), although I'm not particularly using this feature now it might be useful in the future. Next.js works out of the box with Vercel and it was easy to deploy.
-- I choose TypeScript because I wanted to get type safety right away and wanted to make the code safe. 
+- I choose TypeScript because I wanted to get type safety right away and wanted to make the code safe.
+- For styling I decided to use Tailwind css.
 - I utilized Firebase for storing the data. I wanted to build this app quickly and I didn't want to build my own backend and deploy it somewhere.
 - I utilized components to break down this simple app into manageable pieces, I have components for:
     * Listing
