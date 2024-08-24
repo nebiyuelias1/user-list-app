@@ -36,4 +36,4 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
     * Listing
     * Form
     * Search Bar
-- The project is deployed on Vercel and the public url is found in the top right section of this GitHub repository. The good thing is that everytime I make change to this repository the code is automatically deployed. 
+- The project is deployed on Vercel and the public url is [this](https://user-list-app-one.vercel.app/). The good thing is that everytime I make change to this repository the code is automatically deployed. 
