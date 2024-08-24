@@ -1,6 +1,6 @@
 # User List App
 
-This is a user listing app for a test task for [camplight.net](https://camplight.net/). It has the a basic CRUD functionality:
+This is a user listing app for a test task for [camplight.net](https://camplight.net/). It has a basic CRUD functionality:
 - Listing users with pagination
 - Adding new users
 - Deleting users
