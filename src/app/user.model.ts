@@ -3,6 +3,6 @@ export interface User {
     name: string;
     email: string;
     phone: string;
-    timestamp: number;
+    timestamp: number | null;
 }
   

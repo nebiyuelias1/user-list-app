@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { User } from "./user.model";
 import { time } from "console";
@@ -9,12 +9,13 @@ import { time } from "console";
 interface UserFormProps {
   onClose: () => void;
   onSubmitted: (user: User) => void;
+  editingUser?: User | null;
 }
 
-export default function UserForm({ onClose, onSubmitted }: UserFormProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+export default function UserForm({ onClose, onSubmitted, editingUser }: UserFormProps) {
+  const [name, setName] = useState(editingUser?.name || "");
+  const [email, setEmail] = useState(editingUser?.email || "");
+  const [phone, setPhone] = useState(editingUser?.phone || "");
 
   const getAllSubstrings = (str: string) => {
     const substrings = [];
@@ -35,19 +36,28 @@ export default function UserForm({ onClose, onSubmitted }: UserFormProps) {
       return;
     }
     try {
-      const newUser = {
+      let newUser = {
         name,
         email,
         phone,
         searchOptions: [
           ...getAllSubstrings(name.toLowerCase()),
         ],
-        timestamp: Date.now(),
+        timestamp: editingUser?.timestamp || null,
       };
-      const docRef = await addDoc(collection(db, "users"), newUser);
-      onSubmitted({ id: docRef.id, ...newUser});
+      let id;
+      if (editingUser) {
+        newUser.timestamp = editingUser.timestamp;
+        await updateDoc(doc(db, "users", editingUser?.id), newUser);
+        id = editingUser.id;
+      } else {
+        newUser.timestamp = new Date().getTime();
+        const docRef = await addDoc(collection(db, "users"), newUser);
+        id = docRef.id;
+      }
+      onSubmitted({ id, ...newUser});
     } catch (error) {
-      console.error("Error adding document: ", error);
+      alert(`Error when ${editingUser ? 'Updating' : 'Adding'} document: `);
     }
   };
 
@@ -96,7 +106,7 @@ export default function UserForm({ onClose, onSubmitted }: UserFormProps) {
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
         >
-          Add
+          {editingUser ? 'Update' : 'Add'}
         </button>
       </div>
     </form>

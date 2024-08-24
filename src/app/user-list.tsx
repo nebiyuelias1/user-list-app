@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit, startAfter, deleteDoc, doc, onSnapshot, where } from 'firebase/firestore';
 import { db } from "../../firebase";
 import { User } from "./user.model";
+import UserForm from "./user-form";
 
 interface UserListProps {
     searchQuery?: string;
@@ -17,6 +18,8 @@ export default function UserList({ searchQuery }: UserListProps) {
   const [loading, setLoading] = useState(true);
   const [lastVisible, setLastVisible] = useState<any>(null);
   const [hasMore, setHasMore] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   
   const fetchItems = async () => {
     setLoading(true);
@@ -123,6 +126,27 @@ export default function UserList({ searchQuery }: UserListProps) {
     }
   };
 
+  const editUser = (user: User) => {
+    setIsDialogOpen(true);
+    setEditingUser(user);
+  }
+
+  function handleOnSubmit(user: User): void {
+    setIsDialogOpen(false);
+    // Update the user in the list
+    setUsers((prevUsers) => {
+      const index = prevUsers.findIndex((u) => u.id === user.id);
+      if (index === -1) return prevUsers;
+      const newList = [...prevUsers];
+      newList[index] = user;
+      return newList;
+    });
+  }
+
+  function handleCloseDialog(): void {
+    setIsDialogOpen(false);
+  }
+
   return (
       <div className="container mx-auto p-4">
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -149,6 +173,11 @@ export default function UserList({ searchQuery }: UserListProps) {
               <td className="py-2 px-4 border-b">{user.phone}</td>
               <td className="py-2 px-4 border-b">
                 <button 
+                    onClick={() => editUser(user)}
+                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700 mr-2">
+                  Edit
+                </button>
+                <button 
                     onClick={() => deleteUser(user.id)}
                     className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">
                   Delete
@@ -159,6 +188,18 @@ export default function UserList({ searchQuery }: UserListProps) {
         </tbody>
       </table>
       {loading && <div className="text-center">Loading...</div>}
+      {isDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 className="text-xl mb-4">Update User</h2>
+            <UserForm
+              onClose={handleCloseDialog}
+              onSubmitted={handleOnSubmit}
+              editingUser={editingUser}
+            />
+          </div>
+        </div>
+      )}
       {hasMore && !loading && (
         <button
           onClick={handleLoadMore}
